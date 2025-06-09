@@ -145,6 +145,16 @@ exports.login = asyncHandler(async (req, res, next) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      workArea: user.workArea,
+      identityId: user.identityId,
+      birthday: user.birthday,
+      phone: user.phone,
+      mobile: user.mobile,
+      address: user.address,
+      identityType: user.identityType,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      lastLoginAt: user.lastLoginAt,
     },
   });
 });
@@ -331,6 +341,16 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        workArea: user.workArea,
+        identityId: user.identityId,
+        birthday: user.birthday,
+        phone: user.phone,
+        mobile: user.mobile,
+        address: user.address,
+        identityType: user.identityType,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        lastLoginAt: user.lastLoginAt,
       },
     });
   } catch (error) {
@@ -366,6 +386,16 @@ exports.updateProfile = asyncHandler(async (req, res, next) => {
       delete fieldsToUpdate[key];
     }
   });
+
+  // 確保 workArea 是有效的值
+  if (
+    fieldsToUpdate.workArea &&
+    !['', '雙北桃竹苗', '中彰投', '雲嘉南', '高高屏'].includes(
+      fieldsToUpdate.workArea,
+    )
+  ) {
+    return next(new ErrorResponse('無效的工作轄區', 400));
+  }
 
   const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
     new: true,
