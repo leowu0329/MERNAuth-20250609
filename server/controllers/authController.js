@@ -117,7 +117,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   console.log('查找用戶結果:', user ? '找到用戶' : '未找到用戶');
 
   if (!user) {
-    return next(new ErrorResponse('無效的憑證', 401));
+    return next(new ErrorResponse('輸入的帳號及密碼錯誤', 401));
   }
 
   // 檢查密碼是否匹配
@@ -125,7 +125,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   console.log('密碼匹配結果:', isMatch ? '密碼正確' : '密碼錯誤');
 
   if (!isMatch) {
-    return next(new ErrorResponse('無效的憑證', 401));
+    return next(new ErrorResponse('輸入的帳號及密碼錯誤', 401));
   }
 
   // 更新最後登入時間

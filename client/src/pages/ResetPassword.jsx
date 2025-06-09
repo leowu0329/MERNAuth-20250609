@@ -70,10 +70,9 @@ const ResetPassword = () => {
 
     setIsLoading(true);
     try {
-      let response;
       if (token.startsWith('temp-')) {
         // 已登入用戶重設密碼
-        response = await axios.put(
+        await axios.put(
           'http://localhost:5000/api/auth/update-password',
           {
             currentPassword: formData.currentPassword,
@@ -87,7 +86,7 @@ const ResetPassword = () => {
         );
       } else {
         // 忘記密碼重設流程
-        response = await axios.put(
+        await axios.put(
           `http://localhost:5000/api/auth/reset-password/${token}`,
           {
             password: formData.password,
@@ -95,15 +94,9 @@ const ResetPassword = () => {
         );
       }
 
-      console.log('重設密碼響應:', response.data);
       toast.success('密碼重設成功');
       navigate('/');
     } catch (err) {
-      console.error('重設密碼錯誤:', {
-        message: err.message,
-        response: err.response?.data,
-        status: err.response?.status,
-      });
       toast.error(err.response?.data?.message || '密碼重設失敗');
     } finally {
       setIsLoading(false);

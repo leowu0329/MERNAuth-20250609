@@ -14,30 +14,13 @@ const ForgotPassword = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      console.log('發送忘記密碼請求:', { email });
-
       const res = await axios.post(
         'http://localhost:5000/api/auth/forgot-password',
         { email },
       );
 
-      console.log('忘記密碼響應:', res.data);
-
-      if (res.data.resetUrl) {
-        console.log('重設密碼連結:', res.data.resetUrl);
-        // 在開發環境中，直接顯示重設密碼連結
-        if (process.env.NODE_ENV === 'development') {
-          toast.info(`開發環境重設密碼連結: ${res.data.resetUrl}`);
-        }
-      }
-
       toast.success(res.data.message);
     } catch (err) {
-      console.error('忘記密碼錯誤:', {
-        message: err.message,
-        response: err.response?.data,
-        status: err.response?.status,
-      });
       toast.error(err.response?.data?.message || '發送失敗');
     } finally {
       setIsLoading(false);
@@ -52,7 +35,7 @@ const ForgotPassword = () => {
             <Card.Body className="p-5">
               <h2 className="text-center mb-4">忘記密碼</h2>
               <p className="text-muted text-center mb-4">
-                請輸入您的註冊信箱，我們將發送重設密碼連結給您
+                請輸入您的註冊信箱，我們將會發送重設密碼連結給您
               </p>
               <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-4">
