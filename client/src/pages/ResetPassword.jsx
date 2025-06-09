@@ -9,6 +9,7 @@ import PasswordInput from '../components/PasswordInput';
 
 const ResetPassword = () => {
   const [formData, setFormData] = useState({
+    currentPassword: '',
     password: '',
     confirmPassword: '',
   });

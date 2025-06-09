@@ -38,7 +38,7 @@ const Profile = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    role: '',
+    role: '一般使用者',
     workArea: '',
     identityId: '',
     birthday: '',
@@ -61,7 +61,6 @@ const Profile = () => {
 
   useEffect(() => {
     if (authUser) {
-      console.log('Current authUser:', authUser);
       setFormData({
         name: authUser.name || '',
         email: authUser.email || '',
@@ -152,13 +151,10 @@ const Profile = () => {
 
         // 延遲跳轉，讓用戶看到成功訊息
         setTimeout(() => {
-          navigate('/');
+          navigate('/', { replace: true });
         }, 1000);
-      } else {
-        toast.error('更新資料失敗');
       }
     } catch (err) {
-      console.error('更新資料失敗:', err);
       if (err.response?.status === 401) {
         toast.error('請重新登入');
         navigate('/login');

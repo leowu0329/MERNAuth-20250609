@@ -28,8 +28,8 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuth = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/auth/profile');
-      setUser(res.data.user);
+      const res = await axios.get('http://localhost:5000/api/auth/me');
+      setUser(res.data.data);
       setIsAuthenticated(true);
     } catch (err) {
       localStorage.removeItem('token');
