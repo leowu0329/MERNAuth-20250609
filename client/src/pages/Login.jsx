@@ -13,8 +13,8 @@ import PasswordInput from '../components/PasswordInput';
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    email: 'ryowu0329@gmail.com',
-    password: 'leo140814',
+    email: '',
+    password: '',
   });
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();

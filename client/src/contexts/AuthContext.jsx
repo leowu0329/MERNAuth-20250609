@@ -58,30 +58,26 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password) => {
     try {
-      // 先進行註冊
-      await axios.post('http://localhost:5000/api/auth/register', {
+      // 進行註冊
+      const res = await axios.post('http://localhost:5000/api/auth/register', {
         name,
         email,
         password,
       });
 
-      // 註冊成功後，使用相同的憑證進行登入
-      const loginRes = await axios.post(
-        'http://localhost:5000/api/auth/login',
-        {
-          email,
-          password,
-        },
-      );
-
-      const { token, user } = loginRes.data;
+      const { token, user } = res.data;
       localStorage.setItem('token', token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       setUser(user);
       setIsAuthenticated(true);
       return user;
     } catch (error) {
-      throw error;
+      // 直接使用後端返回的錯誤訊息
+      const errorMessage = error.response?.data?.message;
+      if (errorMessage) {
+        throw new Error(errorMessage);
+      }
+      throw new Error('註冊失敗，請稍後再試');
     }
   };
 

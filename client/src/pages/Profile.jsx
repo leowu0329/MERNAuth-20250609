@@ -129,7 +129,9 @@ const Profile = () => {
       // 從 localStorage 獲取 token
       const token = localStorage.getItem('token');
       if (!token) {
-        throw new Error('未找到授權 token');
+        toast.error('請重新登入');
+        navigate('/login');
+        return;
       }
 
       const res = await axios.put(
@@ -142,19 +144,22 @@ const Profile = () => {
         },
       );
 
-      // 更新 AuthContext 中的用戶資料
-      updateUser(res.data.user);
+      if (res.data.success) {
+        // 更新 AuthContext 中的用戶資料
+        updateUser(res.data.user);
+        toast.success(res.data.message || '資料更新成功');
+        setIsEditing(false);
 
-      toast.success(res.data.message);
-      setIsEditing(false);
-
-      // 延遲跳轉，讓用戶看到成功訊息
-      setTimeout(() => {
-        navigate('/');
-      }, 1000);
+        // 延遲跳轉，讓用戶看到成功訊息
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
+      } else {
+        toast.error('更新資料失敗');
+      }
     } catch (err) {
       console.error('更新資料失敗:', err);
-      if (err.message === '未找到授權 token') {
+      if (err.response?.status === 401) {
         toast.error('請重新登入');
         navigate('/login');
       } else {

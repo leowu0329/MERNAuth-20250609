@@ -14,15 +14,30 @@ const ForgotPassword = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
+      console.log('發送忘記密碼請求:', { email });
+
       const res = await axios.post(
         'http://localhost:5000/api/auth/forgot-password',
         { email },
       );
-      toast.success(res.data.message);
+
+      console.log('忘記密碼響應:', res.data);
+
       if (res.data.resetUrl) {
         console.log('重設密碼連結:', res.data.resetUrl);
+        // 在開發環境中，直接顯示重設密碼連結
+        if (process.env.NODE_ENV === 'development') {
+          toast.info(`開發環境重設密碼連結: ${res.data.resetUrl}`);
+        }
       }
+
+      toast.success(res.data.message);
     } catch (err) {
+      console.error('忘記密碼錯誤:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+      });
       toast.error(err.response?.data?.message || '發送失敗');
     } finally {
       setIsLoading(false);

@@ -70,13 +70,40 @@ const ResetPassword = () => {
 
     setIsLoading(true);
     try {
-      await axios.put('http://localhost:5000/api/auth/reset-password', {
-        token,
-        password: formData.password,
-      });
+      let response;
+      if (token.startsWith('temp-')) {
+        // 已登入用戶重設密碼
+        response = await axios.put(
+          'http://localhost:5000/api/auth/update-password',
+          {
+            currentPassword: formData.currentPassword,
+            newPassword: formData.password,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          },
+        );
+      } else {
+        // 忘記密碼重設流程
+        response = await axios.put(
+          `http://localhost:5000/api/auth/reset-password/${token}`,
+          {
+            password: formData.password,
+          },
+        );
+      }
+
+      console.log('重設密碼響應:', response.data);
       toast.success('密碼重設成功');
-      navigate('/login');
+      navigate('/');
     } catch (err) {
+      console.error('重設密碼錯誤:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+      });
       toast.error(err.response?.data?.message || '密碼重設失敗');
     } finally {
       setIsLoading(false);
@@ -94,10 +121,25 @@ const ResetPassword = () => {
                 <p className="text-muted">請輸入您的新密碼</p>
               </div>
               <Form onSubmit={handleSubmit}>
+                {token.startsWith('temp-') && (
+                  <Form.Group className="mb-3">
+                    <PasswordInput
+                      value={formData.currentPassword}
+                      onChange={handleChange}
+                      name="currentPassword"
+                      placeholder="請輸入當前密碼"
+                      errors={
+                        errors.currentPassword ? [errors.currentPassword] : []
+                      }
+                    />
+                  </Form.Group>
+                )}
+
                 <Form.Group className="mb-3">
                   <PasswordInput
                     value={formData.password}
                     onChange={handleChange}
+                    placeholder="請輸入新密碼"
                     errors={errors.password}
                   />
                 </Form.Group>
@@ -107,6 +149,7 @@ const ResetPassword = () => {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     name="confirmPassword"
+                    placeholder="請確認新密碼"
                     errors={
                       errors.confirmPassword ? [errors.confirmPassword] : []
                     }

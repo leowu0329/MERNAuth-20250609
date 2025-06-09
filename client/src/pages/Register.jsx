@@ -125,7 +125,8 @@ const Register = () => {
       toast.success('註冊成功');
       navigate('/');
     } catch (err) {
-      toast.error(err.response?.data?.message || '註冊失敗');
+      console.error('註冊錯誤:', err);
+      toast.error(err.message || '註冊失敗');
     } finally {
       setIsLoading(false);
     }
